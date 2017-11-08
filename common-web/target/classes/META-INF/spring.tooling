@@ -1,0 +1,7 @@
+# Tooling related information for the JPA namespace
+http\://www.postss.com/extends/spring/schema/data/jpa@name=JPA Namespace
+http\://www.postss.com/extends/spring/schema/data/jpa@prefix=jpa
+http\://www.postss.com/extends/spring/schema/data/jpa@icon=org/springframework/jdbc/config/spring-jdbc.gif
+http\://www.postss.com/extends/spring/schema/data/jpa@name=JPA Namespace
+http\://www.postss.com/extends/spring/schema/data/jpa@prefix=jpa
+http\://www.postss.com/extends/spring/schema/data/jpa@icon=org/springframework/jdbc/config/spring-jdbc.gif

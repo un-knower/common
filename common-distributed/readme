@@ -1,0 +1,20 @@
+common-distributed:通用分布式包
+
+功能:
+1.session共享
+	web.xml：
+	必须放在所有filter的第一个
+	<filter>
+	    <filter-name>springSessionRepositoryFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>springSessionRepositoryFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	spring-xml:
+	<import resource="classpath*:spring/spring-security-session.xml"/>
+	
+	properties:
+	redis.host/redis.port/redis.timeout/redis.name/redis.password

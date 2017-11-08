@@ -1,0 +1,3 @@
+http\://www.postss.com/extends/spring/schema/data/jpa=com.postss.common.extend.data.jpa.repository.support.PostssJpaRepositoryNameSpaceHandler
+http\://www.postss.com/extends/spring/schema/data/jpa=com.postss.common.extend.data.jpa.repository.support.PostssJpaRepositoryNameSpaceHandler
+http\://www.postss.com/extends/spring/schema/context=com.postss.common.extend.org.springframework.context.config.ContextNamespaceHandlerSupports

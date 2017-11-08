@@ -1,0 +1,28 @@
+引入：
+pom:
+<dependency>
+	<groupId>${postss-group-id}</groupId>
+	<artifactId>common-kylin-support-repository</artifactId>
+	<version>0.0.3-SNAPSHOT</version>
+</dependency>
+
+配置：spring-context-dao.xml
+xmlns增加
+xmlns:kylin="http://www.postss.com/common/data/kylin"
+
+xsi:schemaLocation增加
+http://www.postss.com/common/data/kylin
+http://www.postss.com/common/data/kylin/postss-common-kylin.xsd"
+
+使用：
+<kylin:repositories base-package="${development.package}.*.repository" config-path="properties/kylin-sql.properties"/>
+
+java:
+返回值仅可以为    ApiSqlResultEntity(推荐) 或    String
+@KylinRepositoryBean(project = "projectName")
+public interface MyKylinRepository extends KylinRepository {
+
+    @KylinQuery("select * from {0}")
+    public ApiSqlResultEntity getBySql(String table);
+
+}

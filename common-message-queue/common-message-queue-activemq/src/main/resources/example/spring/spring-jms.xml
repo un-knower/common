@@ -1,0 +1,126 @@
+<beans xmlns="http://www.springframework.org/schema/beans"  
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans  
+http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd" >
+
+	
+	<!-- 引入activemq配置文件 -->
+    <context:property-placeholder location="classpath:properties/activemq.properties"
+    ignore-unresolvable="true" />
+    
+    <!-- 自定义jms接收参数解析器 -->
+	<bean id="jmsMessageParse" class="com.postss.common.message.queue.activemq.messageParse.impl.FastjsonParse"/>
+	
+	<!-- 自定义jms参数调用解析器 -->
+	<bean id="jmsMessageInvoke" class="com.postss.common.message.queue.activemq.messageInvoke.impl.MethodInvoke"/>
+	
+	<!-- jms消息控制 -->
+	<bean id="activemqHelper" class="com.postss.common.message.queue.activemq.ActivemqHelper">
+		<!-- <property name="queueDestinationManual" ref="queueDestinationManual"/>
+		<property name="queueDestinationAuto" ref="queueDestinationAuto" />
+		<property name="producerService" ref="producerService"/> -->
+		<property name="jmsMessageParse" ref="jmsMessageParse"/>
+		<property name="jmsMessageInvoke" ref="jmsMessageInvoke"/>
+	</bean>
+    
+    <!-- 防止消息的不均匀消费-->
+	<bean id="activeMQPrefetchPolicy" class="org.apache.activemq.ActiveMQPrefetchPolicy">
+		<property name="queuePrefetch" value="${activemq.queuePrefetch}"/>
+	</bean>
+    
+    <!--jms and activemq 配置-->
+   	<!-- 配置JMS连接工厂 -->
+	<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="${activemq.brokerURL}" /><!-- 连接url -->
+		<property name="useAsyncSend" value="${activemq.useAsyncSend}" /><!-- true：异步发送消息,默认为同步发送  -->
+		<property name="prefetchPolicy" ref="activeMQPrefetchPolicy"/><!-- 防止消息的不均匀消费-->
+	</bean> 
+	
+	<!-- Spring Caching 连接工厂 -->
+	<bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <constructor-arg ref="connectionFactory"/>
+        <property name="sessionCacheSize" value="${activemq.sessionCacheSize}"/>
+    </bean>
+    
+	<!-- 定义消息队列(Queue手动获取消息) -->
+	<bean id="queueDestinationManual" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="${activemq.queueManual}"/><!-- 设置消息队列的名字:手动获取消息队列 -->
+	</bean>
+	
+	<!-- 定义消息队列(Queue：自动获取消息) -->
+	<bean id="queueDestinationAuto" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="${activemq.queueAuto}"/><!-- 设置消息队列的名字:自动获取消息队列 -->
+	</bean>
+	
+	<!-- 接收手动队列模版 -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="cachingConnectionFactory" />
+		<property name="defaultDestination" ref="${activemq.queueManual}" /><!-- 默认消息队列 -->
+		<property name="receiveTimeout" value="2000" /><!-- 消息接收时间  -->
+		<!-- 事物管理(当onMessage发生异常时AbstractMessageListenerContainer会catch此异常并判断是否开启了事物回滚,默认为false) -->
+		<property name="sessionTransacted" value="${activemq.sessionTransacted}"/>
+	</bean>
+	
+	<!--queue消息生产者 -->
+	<bean id="producerService" class="com.postss.common.message.queue.activemq.producer.impl.ProducerServiceImpl">
+		<property name="jmsTemplate" ref="jmsTemplate"></property>
+	</bean>
+
+	<!--queue消息消费者 -->
+	<bean id="receiveService" class="com.postss.common.message.queue.activemq.receiver.impl.MqReceiverServiceImpl">
+		<property name="jmsTemplate" ref="jmsTemplate"></property>
+	</bean>
+	
+	<!-- 配置消息队列监听者(Queue),onMessage方法 -->
+	<bean id="queueAutoListener" class="com.postss.common.message.queue.activemq.listener.QueueAutoLinster" />
+	
+	<!-- 消息监听容器（Queue），配置连接工厂，监听的队列是queue2，监听器是上面定义的监听器 -->
+	<bean id="jmsContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="cachingConnectionFactory" />
+		<property name="destinationName" value="${activemq.queueAuto}" />
+		<property name="messageListener" ref="queueAutoListener" />
+		<property name="sessionTransacted" value="${activemq.sessionTransacted}"/>
+	</bean>
+
+	<!-- 定义消息主题（Topic） -->
+	<bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="topic"/>
+	</bean>
+	
+	<!-- 配置JMS模板(Topic),pubSubDomain="true"-->
+	<bean id="topicJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="cachingConnectionFactory" />
+		<property name="defaultDestination" ref="topicDestination" /><!-- 或使用destinationName value="队列名" -->
+		<property name="pubSubDomain" value="true" /><!-- true为主题Topic,不设置或false为队列queue -->
+		<property name="receiveTimeout" value="10000" />
+	</bean>
+	
+	<!--topic消息发布者 -->
+	<bean id="topicProvider" class="com.postss.common.message.queue.activemq.TopicProvider">
+		<property name="topicJmsTemplate" ref="topicJmsTemplate"></property>
+	</bean>
+	
+	<!-- 消息主题监听者 和 主题监听容器 可以配置多个，即多个订阅者 -->
+	<!-- 消息主题监听者(Topic) -->
+	<bean id="topicMessageListener" class="com.postss.common.message.queue.activemq.listener.TopicMessageListener" />
+	
+	<!-- 主题监听容器 （Topic） -->
+	<bean id="topicJmsContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="cachingConnectionFactory" />
+		<property name="destination" ref="topicDestination" /><!-- 主题消息  -->
+		<property name="messageListener" ref="topicMessageListener" /><!-- 主题监听者  -->
+		<property name="concurrentConsumers" value="4"/><!-- 主题监听者个数  -->
+	</bean>
+	
+	<!-- 自定义jms接收参数解析器 -->
+	<!-- <bean id="ActivemqHelper" class="com.sun.douyuweb.activeMQ.ActivemqHelper">
+		<property name="queueDestinationManual" ref="queueDestinationManual"/>
+		<property name="queueDestinationAuto" ref="queueDestinationAuto"/>
+		<property name="producerService" ref="producerService"/>
+	</bean> -->
+</beans>

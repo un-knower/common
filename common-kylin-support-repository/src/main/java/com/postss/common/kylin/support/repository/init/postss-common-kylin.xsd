@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns="http://www.postss.com/common/data/kylin"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:tool="http://www.springframework.org/schema/tool"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:repository="http://www.postss.com/common/data/kylin/repository"
+	targetNamespace="http://www.postss.com/common/data/kylin"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.springframework.org/schema/tool" />
+	<xsd:import namespace="http://www.springframework.org/schema/context" />
+	<xsd:import namespace="http://www.postss.com/common/data/kylin/repository"
+		schemaLocation="http://www.postss.com/common/data/kylin/repository/postss-common-kylin-repository.xsd" />
+		
+
+	<xsd:element name="repositories">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="repository:repositories">
+					
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

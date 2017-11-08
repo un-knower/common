@@ -1,0 +1,35 @@
+<beans xmlns="http://www.springframework.org/schema/beans"  
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans  
+http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+http://www.springframework.org/schema/context    
+http://www.springframework.org/schema/context/spring-context-3.2.xsd"  >
+   
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="${redis.maxTotal:300}"/>
+        <property name="maxIdle" value="${redis.maxIdle:300}"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="true"/>
+    </bean>
+   
+     <bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool"  scope="singleton">
+        <constructor-arg index="0" ref="jedisPoolConfig" />
+        <constructor-arg index="1">
+            <list>
+                <bean class="redis.clients.jedis.JedisShardInfo">
+                    <constructor-arg index="0" value="${redis.host}" />
+                    <constructor-arg index="1" value="${redis.port:6379}" />
+                    <constructor-arg index="2" value="${redis.timeout:18000}" />
+                    <constructor-arg index="3" value="${redis.name:cache.redis}" />
+                    <property name="password" value="${redis.password}"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+    
+    <!-- redis 连接池 -->
+    <bean id="redisDataSource" class="com.postss.common.cache.redis.dataSource.impl.RedisDataSourceImpl">
+        <property name="shardedJedisPool" ref="shardedJedisPool"/>
+    </bean>
+</beans>

@@ -1,5 +1,0 @@
-http\://www.postss.com/extends/spring/schema/data/jpa/postss-spring-jpa.xsd=com/postss/common/extend/data/jpa/repository/support/postss-spring-jpa.xsd
-http\://www.postss.com/extends/spring/schema/data/repository/postss-spring-repository.xsd=com/postss/common/extend/data/jpa/repository/support/postss-spring-repository.xsd
-http\://www.postss.com/extends/spring/schema/data/jpa/postss-spring-jpa.xsd=com/postss/common/extend/data/jpa/repository/support/postss-spring-jpa.xsd
-http\://www.postss.com/extends/spring/schema/data/repository/postss-spring-repository.xsd=com/postss/common/extend/data/jpa/repository/support/postss-spring-repository.xsd
-http\://www.postss.com/extends/spring/schema/context/spring-context.xsd=com/postss/common/extend/org/springframework/context/config/postss-spring-context-4.3.xsd

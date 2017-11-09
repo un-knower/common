@@ -27,7 +27,7 @@ public class SupportsComponentScanBeanDefinitionParser extends ComponentScanBean
 
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
-        element.setAttribute(BASE_PACKAGE_ATTRIBUTE, "com.postss");
+        element.setAttribute(BASE_PACKAGE_ATTRIBUTE, "com.postss,com.chinaoly");
         element.setAttribute(USE_DEFAULT_FILTERS_ATTRIBUTE, "false");
         return super.parse(element, parserContext);
     }

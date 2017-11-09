@@ -14,12 +14,6 @@
 			<artifactId>common-base</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		
-		<dependency>
-    <groupId>com.facebook.presto</groupId>
-    <artifactId>presto-jdbc</artifactId>
-    <version>0.188</version>
-</dependency>
   		
 		<!-- json -->
 		<dependency>

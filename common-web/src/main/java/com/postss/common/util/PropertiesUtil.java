@@ -87,27 +87,7 @@ public class PropertiesUtil extends PropertyPlaceholderConfigurer implements Spr
             List<String> list = StringUtil.getPatternMattcherList(value, patternComolie, 0);
             log.debug("获得未转化的${} 内容集合 : " + list.toString());
             if (list.size() > 0) {
-                for (String str : list) {
-                    //String configName = str.substring(2);
-                    //configName = configName.substring(0, configName.length() - 1);
-                    //String realVal = getPropertiesByConfig(configName);
-                    // 如果此值中有未转化的${}则暂时跳过
-                    //if (StringUtil.notEmpty(realVal)
-                    //        && StringUtil.getPatternMattcherList(realVal, patternComolie, 1).size() > 0) {
-                    //    continue;
-                    //}
-                    //String pattern = "\\$\\{" + configName + "\\}";
-                    //value = value.replaceAll(pattern, getPropertiesByConfig(configName));
-                    String configName = str.substring(2);
-                    configName = configName.substring(0, configName.length() - 1);
-                    String pattern = "\\$\\{" + configName + "\\}";
-                    String realVal = getPropertiesByConfig(configName);
-                    if (StringUtil.notEmpty(realVal)
-                            && StringUtil.getPatternMattcherList(realVal, patternComolie, 1).size() > 0) {
-                        continue;
-                    }
-                    value = value.replaceAll(pattern, realVal);
-                }
+                value = replace(value);
             } else {
                 okVal++;
             }
@@ -121,8 +101,28 @@ public class PropertiesUtil extends PropertyPlaceholderConfigurer implements Spr
         }
     }
 
+    private static String replace(String value) {
+        List<String> list = StringUtil.getPatternMattcherList(value, patternComolie, 0);
+        log.debug("获得未转化的${} 内容集合 : " + list.toString());
+        if (list.size() > 0) {
+            for (String str : list) {
+                String configName = str.substring(2);
+                configName = configName.substring(0, configName.length() - 1);
+                String pattern = "\\$\\{" + configName + "\\}";
+                String realVal = getPropertiesByConfig(configName);
+                if (StringUtil.notEmpty(realVal)
+                        && StringUtil.getPatternMattcherList(realVal, patternComolie, 1).size() > 0) {
+                    continue;
+                }
+                value = value.replaceAll(pattern, realVal);
+            }
+        }
+        return value;
+    }
+
     // 获得配置文件值
     public static String getProperty(String name) {
+        name = replace(name);
         if (propertyMap != null && propertyMap.containsKey(name)) {
             return propertyMap.get(name);
         }
@@ -130,6 +130,7 @@ public class PropertiesUtil extends PropertyPlaceholderConfigurer implements Spr
     }
 
     public static String getProperty(String name, String path) {
+        name = replace(name);
         Properties properties = loadProperties(path);
         if (properties != null) {
             return (String) properties.get(name);

@@ -41,13 +41,21 @@ public class ConditionFragment implements Fragment {
     }
 
     public ConditionFragment setCondition(Object[] lhs, Object rhs) {
-        this.lhs = sqlWarp.warp(lhs);
+        String[] strArray = new String[lhs.length];
+        for (int i = 0; i < strArray.length; i++) {
+            strArray[i] = lhs[i].toString();
+        }
+        this.lhs = strArray;
         this.rhs = new String[] { sqlWarp.warp(rhs) };
         return this;
     }
 
     public ConditionFragment setCondition(Object[] lhs, Object[] rhs) {
-        this.lhs = sqlWarp.warp(lhs);
+        String[] strArray = new String[lhs.length];
+        for (int i = 0; i < strArray.length; i++) {
+            strArray[i] = lhs[i].toString();
+        }
+        this.lhs = strArray;
         this.rhs = sqlWarp.warp(rhs);
         return this;
     }

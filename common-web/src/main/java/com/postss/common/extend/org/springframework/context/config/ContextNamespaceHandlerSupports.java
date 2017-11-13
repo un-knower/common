@@ -10,6 +10,7 @@ public class ContextNamespaceHandlerSupports extends ContextNamespaceHandler {
         registerBeanDefinitionParser("component-scan", new ComponentScanBeanDefinitionParser());
         registerBeanDefinitionParser("web-component-scan", new WebSupportsComponentScanBeanDefinitionParser());
         registerBeanDefinitionParser("root-component-scan", new RootSupportsComponentScanBeanDefinitionParser());
+        registerBeanDefinitionParser("proxy-component-scan", new ProxySupportsComponentScanBeanDefinitionParser());
     }
 
 }

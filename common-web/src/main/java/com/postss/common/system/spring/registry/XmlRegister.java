@@ -1,5 +1,7 @@
 package com.postss.common.system.spring.registry;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 
 /**
@@ -15,6 +17,11 @@ public interface XmlRegister {
      * 注册全部bean
      */
     public void registryBean();
+
+    /**
+     * 注册bean
+     */
+    public void registryBeans(Collection<BeanDefinition> beanDefinitions);
 
     /**
      * 注册单个bean

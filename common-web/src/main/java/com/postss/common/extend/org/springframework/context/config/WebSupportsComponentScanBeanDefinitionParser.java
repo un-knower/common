@@ -8,6 +8,7 @@ public class WebSupportsComponentScanBeanDefinitionParser extends SupportsCompon
 
     protected void parseTypeFilters(Element element, ClassPathBeanDefinitionScanner scanner,
             ParserContext parserContext) {
+        super.parseTypeFilters(element, scanner, parserContext);
         ClassLoader classLoader = scanner.getResourceLoader().getClassLoader();
         scanner.addIncludeFilter(createTypeFilter("annotation", "org.springframework.stereotype.Controller",
                 classLoader, parserContext));

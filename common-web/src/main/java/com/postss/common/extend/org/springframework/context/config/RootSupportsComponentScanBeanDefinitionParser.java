@@ -8,6 +8,7 @@ public class RootSupportsComponentScanBeanDefinitionParser extends SupportsCompo
 
     protected void parseTypeFilters(Element element, ClassPathBeanDefinitionScanner scanner,
             ParserContext parserContext) {
+        super.parseTypeFilters(element, scanner, parserContext);
         ClassLoader classLoader = scanner.getResourceLoader().getClassLoader();
         scanner.addIncludeFilter(
                 createTypeFilter("annotation", "org.springframework.stereotype.Service", classLoader, parserContext));

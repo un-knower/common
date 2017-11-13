@@ -18,13 +18,23 @@ public class HiveSqlBoostHandler extends AbstractSqlBoostHandler {
     @SuppressWarnings("unchecked")
     public ModelAndView handleInternal(HttpServletRequest request, HttpServletResponse response) {
         String sql = request.getParameter("sql");
+        String split = request.getParameter("split");
+        if (split == null)
+            split = "\t";
         if (StringUtil.notEmpty(sql)) {
             List<Object> list = (List<Object>) executeSql(null, sql);
             StringBuilder sb = new StringBuilder();
             for (Object obj : list) {
                 Object[] row = (Object[]) obj;
+                int count = 0;
                 for (Object one : row) {
-                    sb.append(one + "\t");
+                    //                    sb.append(one + "\t");
+                    count++;
+                    if (count != row.length) {
+                        sb.append(one + split);
+                    } else {
+                        sb.append(one);
+                    }
                 }
                 sb.append("\n");
             }

@@ -36,6 +36,7 @@ public class KylinSqlBuilder {
         sqlBuilder.addGroupBy("DEV_ID_DIM", "KK_LOCATION_NAME");
         sqlBuilder.addGroupBy("TIME_DIM", "XS");
         sqlBuilder.addHaving(SqlHavingCondition.between("TIME_DIM", "XS", SqlFunction.valueOf("SUM"), 1000, 2000));
+        sqlBuilder.prependWhereConditions(SqlCondition.high("TIME_DIM", "XSsss", "1"));
         sqlBuilder.prependWhereConditions(SqlCondition.in("TIME_DIM", "XS", 1, 2));
         sqlBuilder.prependWhereConditions(SqlCondition.in("DEV_ID_DIM", "KK_LOCATION_NAME", "康宁路石桥路口北口3", "南山路杨公堤北口"));
         sqlBuilder.setPage(new BasePage(1, 5));

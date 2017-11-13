@@ -10,7 +10,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
-import com.postss.common.kylin.support.repository.annotation.KylinRepositoryBean;
 import com.postss.common.util.SpringNameSpaceUtil;
 
 public class KylinRepositoryBeanDefinitionParser implements BeanDefinitionParser {
@@ -43,10 +42,6 @@ public class KylinRepositoryBeanDefinitionParser implements BeanDefinitionParser
 
     private void handleError(Exception e, Element source, ReaderContext reader) {
         reader.error(e.getMessage(), reader.extractSource(source), e);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(KylinRepositoryBean.class.getName());
     }
 
 }

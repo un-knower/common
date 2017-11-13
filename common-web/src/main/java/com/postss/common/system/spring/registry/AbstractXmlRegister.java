@@ -1,5 +1,7 @@
 package com.postss.common.system.spring.registry;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 
 /**
@@ -26,6 +28,13 @@ public abstract class AbstractXmlRegister implements XmlRegister {
     @Override
     public void registryAlias(String beanName, String alias) {
         getXmlRegisterConfiguration().getBeanDefinitionRegistry().registerAlias(beanName, alias);
+    }
+
+    @Override
+    public void registryBeans(Collection<BeanDefinition> beanDefinitions) {
+        for (BeanDefinition beanDefinition : beanDefinitions) {
+            registryBean(beanDefinition.getBeanClassName(), beanDefinition);
+        }
     }
 
 }

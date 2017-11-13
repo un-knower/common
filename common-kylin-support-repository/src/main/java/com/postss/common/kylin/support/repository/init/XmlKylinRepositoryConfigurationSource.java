@@ -17,6 +17,7 @@ import org.springframework.data.config.TypeFilterParser.Type;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 import com.postss.common.kylin.support.repository.factory.KylinRepositoryFactoryBean;
 import com.postss.common.log.entity.Logger;
@@ -115,6 +116,11 @@ public class XmlKylinRepositoryConfigurationSource extends XmlKylinRepositoryCon
     @Override
     public BeanDefinitionRegistry getBeanDefinitionRegistry() {
         return parserContext.getRegistry();
+    }
+
+    @Override
+    public NamedNodeMap getAttributes() {
+        return element.getAttributes();
     }
 
 }

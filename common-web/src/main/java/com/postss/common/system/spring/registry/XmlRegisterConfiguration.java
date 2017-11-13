@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.core.io.ResourceLoader;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * 自定义标签注册bean配置接口
@@ -32,5 +33,17 @@ public interface XmlRegisterConfiguration {
      * @return
      */
     public BeanDefinitionRegistry getBeanDefinitionRegistry();
+
+    /**
+     * 获得所有参数
+     * @return
+     */
+    public NamedNodeMap getAttributes();
+
+    /**
+     * 获得指定参数
+     * @return
+     */
+    public String getAttribute(String name);
 
 }

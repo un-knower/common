@@ -16,12 +16,15 @@ public class ConfigAnnotationBeanNameGenerator extends AnnotationBeanNameGenerat
             + ".AutoRootApplicationConfig";
     private static final String COMPONENT_ANNOTATION_CLASSNAME_WEB = COMPONENT_ANNOTATION_PACKAGENAME
             + ".AutoWebApplicationConfig";
+    private static final String COMPONENT_ANNOTATION_CLASSNAME_PROXY = COMPONENT_ANNOTATION_PACKAGENAME
+            + "com.postss.common.extend.org.springframework.context.config.AutoProxyApplicationConfig";
 
     protected boolean isStereotypeWithNameValue(String annotationType, Set<String> metaAnnotationTypes,
             Map<String, Object> attributes) {
 
         boolean isStereotype = annotationType.equals(COMPONENT_ANNOTATION_CLASSNAME_ROOT)
                 || annotationType.equals(COMPONENT_ANNOTATION_CLASSNAME_WEB)
+                || annotationType.equals(COMPONENT_ANNOTATION_CLASSNAME_PROXY)
                 || annotationType.equals(COMPONENT_ANNOTATION_CLASSNAME_AUTO)
                 || (metaAnnotationTypes != null && metaAnnotationTypes.contains(COMPONENT_ANNOTATION_CLASSNAME_AUTO));
 

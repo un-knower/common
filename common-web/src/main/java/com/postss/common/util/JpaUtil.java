@@ -162,6 +162,8 @@ public class JpaUtil {
                     Object val = ReflectUtil.getReadMethod(objclazz, field.getName()).invoke(obj);
                     if (val != null) {
                         if (ArrayUtils.contains(likeField, field.getName())) {
+
+                            // cb.or(cb.between(root.get(field.getName()), 1, 2),cb.between(root.get(field.getName()), 1, 2));
                             predicateList.add(cb.like(root.get(field.getName()), "%" + val + "%"));
                         } else {
                             predicateList.add(cb.equal(root.get(field.getName()), val));

@@ -1,5 +1,6 @@
 package com.postss.common.extend.register;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +14,7 @@ import com.postss.common.extend.org.springframework.context.config.ProxyBeanFact
 import com.postss.common.log.entity.Logger;
 import com.postss.common.log.util.LoggerUtil;
 import com.postss.common.system.spring.registry.XmlRegisterConfiguration;
+import com.postss.common.util.StringUtil;
 
 public class ProxyXmlRegister extends DefaultXmlRegister {
 
@@ -25,16 +27,36 @@ public class ProxyXmlRegister extends DefaultXmlRegister {
         super(xmlRegisterConfiguration);
     }
 
+    /**
+     * <pre>
+     * 注册代理类
+     * 支持继承AutoProxyApplicationConfig注解的形式实现自定义注解
+     * beanName以优先级取，取不到则使用下一级
+     * 1.取继承的注解value值
+     * 2.取AutoProxyApplicationConfig注解value值
+     * 3.取类名
+     * </pre>
+     */
     public void registryBean() {
         Collection<BeanDefinition> beanDefinitions = getFactoryBeans();
         for (BeanDefinition beanDefinition : beanDefinitions) {
             Class<?> clazz = (Class<?>) beanDefinition.getPropertyValues().get("repositoryInterface");
-            AutoProxyApplicationConfig config = AnnotationUtils.getAnnotation(clazz, AutoProxyApplicationConfig.class);
+            Annotation[] annotations = AnnotationUtils.getAnnotations(clazz);
+            Annotation config = null;
+            for (Annotation annotation : annotations) {
+                if (AnnotationUtils.isAnnotationMetaPresent(annotation.getClass(), AutoProxyApplicationConfig.class)) {
+                    config = annotation;
+                    break;
+                }
+            }
+            if (config == null || StringUtil.notEmpty(AnnotationUtils.getValue(config, "value"))) {
+                config = AnnotationUtils.getAnnotation(clazz, AutoProxyApplicationConfig.class);
+            }
             String beanName;
-            if ("".equals(config.value())) {
+            if ("".equals(AnnotationUtils.getValue(config, "value"))) {
                 beanName = clazz.getName();
             } else {
-                beanName = config.value();
+                beanName = (String) AnnotationUtils.getValue(config, "value");
             }
             registryBean(beanName, beanDefinition);
         }

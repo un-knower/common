@@ -54,7 +54,6 @@ public class MailUtil {
     
     public static void sendMailByToFormJMS(String toEmail, String token, Integer userId) {
         try {
-            System.out.println("ok!");
             Long longDate = System.currentTimeMillis();
             String newToken = token.substring(0, 16) + longDate + token.substring(16);
             String content = MailTemplate.registTemplate + "<p>http://www.douyuweb.com/user/updateActivation?userId="

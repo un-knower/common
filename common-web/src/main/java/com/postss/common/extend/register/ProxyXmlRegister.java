@@ -74,7 +74,6 @@ public class ProxyXmlRegister extends DefaultXmlRegister {
                         .addPropertyValue("repositoryInterface",
                                 org.springframework.util.ClassUtils.forName(interfaceName, classLoader));
                 String config = getXmlRegisterConfiguration().getAttribute(CONFIG);
-                System.out.println(config);
                 builder.addPropertyValue("config", config);
                 result.add(builder.getBeanDefinition());
             } catch (ClassNotFoundException e) {

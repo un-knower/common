@@ -5,16 +5,6 @@ import org.hibernate.sql.InFragment;
 
 public class MysqlCondition {
 
-    public static void main(String[] arg) {
-        System.out.println(in("table", "co", "sac", "sad").toFragmentString());
-        System.out.println(toFragmentString(equals("table", "co", "sac"), high("table", "co", "sac"),
-                lower("table", "co", "sac")));
-        System.out.println(equals("table", "co", "sac").toFragmentString());
-        System.out.println(high("table", "co", "sac").toFragmentString());
-        System.out.println(lower("table", "co", "sac").toFragmentString());
-        System.out.println(between("table", "co", "l", "r").toFragmentString());
-    }
-
     public static InFragment in() {
         return new InFragment();
     }

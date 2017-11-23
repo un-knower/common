@@ -316,14 +316,4 @@ public class QuerySelect implements Fragment {
         return toRealQueryString();
     }
 
-    public static void main(String[] args) {
-        String sql = "select * from a where a = ({?'sad(1992)'})";
-        System.out.println(sql.indexOf("("));
-        List<String> list = StringUtil.getPatternMattcherList(sql, "\\(\\{\\?(.*?)\\}\\)", 1);
-        for (String param : list) {
-            sql = sql.replaceAll("\\(\\{\\?(.*?)\\}\\)", param);
-        }
-        System.out.println(sql);
-    }
-
 }

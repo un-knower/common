@@ -6,13 +6,10 @@ package com.postss.common.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
-
-import com.postss.common.constant.Constant;
 
 /**
  * 七牛上传etag算法
@@ -169,13 +166,6 @@ public class EtagUtil {
             etag = urlSafeBase64Encode(hashData);
         }
         return etag;
-    }
-
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        System.out.println(getEtagCode("C:\\Users\\jwsun\\Desktop\\systemManage.zip"));
-        System.out.println(getEtagCode(FileUtil.importFile(new File("C:\\Users\\jwsun\\Desktop\\systemManage.zip"))
-                .getBytes(Constant.CHARSET.ISO_8859_1)));
-
     }
 
 }

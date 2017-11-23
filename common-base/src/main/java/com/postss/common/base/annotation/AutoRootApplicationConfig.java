@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * @date 2017年9月13日 下午8:16:53
  * @version 1.0.0
  */
-@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.TYPE })
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @AutoConfig

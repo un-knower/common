@@ -74,9 +74,4 @@ public class AesUtil {
         }
         return rawKey;
     }
-
-    public static void main(String[] args) {
-        System.out.println(encrypt("root", "root"));
-        System.out.println(decrypt("root", "KutR2ys5pJycitP2BfUWCA=="));
-    }
 }

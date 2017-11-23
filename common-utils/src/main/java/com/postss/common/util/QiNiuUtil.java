@@ -1,6 +1,5 @@
 package com.postss.common.util;
 
-
 /**
  * 上传七牛工具类
  * @ClassName: QiNiuUtil
@@ -11,7 +10,7 @@ package com.postss.common.util;
 public class QiNiuUtil {
 
     /*private static Auth auth = Auth.create(Constant.QINIU_CONFIG.ACCESS_KEY, Constant.QINIU_CONFIG.SECRET_KEY);
-
+    
     public static class MyRet {
     	public long fsize;
     	public String key;
@@ -20,7 +19,7 @@ public class QiNiuUtil {
     	public int height;
     	public String fileType;
     }
-
+    
     //处理方法（尾缀）：
     //下载：?attname=     举个栗子：http://7xpss8.com1.z0.glb.clouddn.com/39fd7061-928f-4333-89bf-4b8258c5ac72.jpg?attname=
     //缩放：  ?imageView2/2/h/100   http://7xpss8.com1.z0.glb.clouddn.com/39fd7061-928f-4333-89bf-4b8258c5ac72.jpg?imageView2/2/h/100
@@ -42,12 +41,12 @@ public class QiNiuUtil {
     								"returnBody",
     								"{\"key\":$(key),\"hash\":$(etag),\"width\":$(imageInfo.width),\"height\":$(imageInfo.height),\"fileType\":$(imageInfo.format),\"saveUrl\":$(key)}"));
     }
-
+    
     //简单上传
     public static String getUpToken2() {
     return auth.uploadToken(Constant.QINIU_CONFIG.BUCKET);
     }
-
+    
     *//**
       * 文件上传
       * @author sjw
@@ -75,17 +74,11 @@ public class QiNiuUtil {
     } catch (QiniuException e) {
     	Response r = e.response;
     	map.put("state", "FAIL");
-    	System.out.println(r.toString());
-    	try {
-    		System.out.println(r.bodyString());
-    	} catch (QiniuException e1) {
-
-    	}
     }
     return map;
-
+    
     }
-
+    
     *//**
       * 存储文件
       * @author sjw
@@ -106,7 +99,7 @@ public class QiNiuUtil {
     map.put("localPath", localPath);
     return map;
     }
-
+    
     *//**
       * 传入七牛图片网址，输出下载地址
       * @author sjw
@@ -121,7 +114,7 @@ public class QiNiuUtil {
     String url = saveName + "?attname=" + picName;
     return url;
     }
-
+    
     *//**
       * 传入七牛图片网址，输出图片信息map
       * @author sjw
@@ -142,7 +135,7 @@ public class QiNiuUtil {
     }
     return map;
     }
-
+    
     *//**
       * 传入七牛图片网址，输出图片信息json
       * @author sjw
@@ -154,7 +147,7 @@ public class QiNiuUtil {
     String imageInfo = WebResourceUtil.getURLResponse(retUrl, RequestMethod.GET, null, null, "utf-8");
     return imageInfo;
     }
-
+    
     *//**
       * 上传过程服务
       * @param file : 文件
@@ -178,7 +171,7 @@ public class QiNiuUtil {
     retMap.put("list", list);
     return retMap;
     }
-
+    
     *//**
       * 上传过程服务
       * @param file : 文件
@@ -188,7 +181,7 @@ public class QiNiuUtil {
       */
     /*
     public static Map<String, Object> uploadServer(MultipartFile file, Long maxSize) throws Exception {
-
+    
     Map<String, Object> retMap = new HashMap<String, Object>();
     Map<String, Object> result = new HashMap<String, Object>();
     if (file.getSize() > maxSize) {
@@ -199,7 +192,7 @@ public class QiNiuUtil {
     retMap.put("list", result);
     return retMap;
     }
-
+    
     *//**
       * @description 删除指定七牛空间的指定文件
       * @author sjw
@@ -224,7 +217,7 @@ public class QiNiuUtil {
     	return false;
     }
     }
-
+    
     @SuppressWarnings("unchecked")
     public static List<String> getAllFile() {
     String url = "rsf.qbox.me";
@@ -241,7 +234,7 @@ public class QiNiuUtil {
     }
     return retList;
     }
-
+    
     public static void main(String[] args) {
     getAllFile();
     }*/

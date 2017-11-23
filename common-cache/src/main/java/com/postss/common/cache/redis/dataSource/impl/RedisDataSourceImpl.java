@@ -27,7 +27,6 @@ public class RedisDataSourceImpl implements RedisDataSource {
     }
 
     public RedisDataSourceImpl() {
-        /* System.out.println(111); */
     }
 
     @Override

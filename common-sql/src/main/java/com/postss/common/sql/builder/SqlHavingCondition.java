@@ -16,16 +16,6 @@ import com.postss.common.sql.fragment.SqlFunctionConditionFragment;
  */
 public class SqlHavingCondition {
 
-    public static void main(String[] arg) {
-        /*System.out.println(in("table", "co", "sac", "sad").toFragmentString());
-        System.out.println(toFragmentString(equals("table", "co", "sac"), high("table", "co", "sac"),
-                lower("table", "co", "sac")));
-        System.out.println(equals("table", "co", "sac").toFragmentString());*/
-        System.out.println(between("TIME_DIM", "XS", SqlFunction.valueOf("SUM"), 1000, 2000).toFragmentString());
-        /*System.out.println(lower("table", "co", "sac").toFragmentString());
-        System.out.println(between("table", "co", "l", "r").toFragmentString());*/
-    }
-
     public static SqlWarp sqlWarp = new KylinSqlWarp();
 
     public static InFragment in() {

@@ -14,6 +14,5 @@ public class SpringDataJpaAspect {
 
     @Before("springDataJpaAspect()")
     public void beforeAop(JoinPoint joinPoint) {
-        System.out.println("123");
     }
 }

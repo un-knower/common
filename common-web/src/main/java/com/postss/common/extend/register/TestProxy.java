@@ -5,12 +5,16 @@ import java.util.Map;
 import org.aopalliance.intercept.MethodInvocation;
 
 import com.postss.common.extend.org.springframework.context.config.AutoProxy;
+import com.postss.common.log.entity.Logger;
+import com.postss.common.log.util.LoggerUtil;
 
 public class TestProxy implements AutoProxy {
 
+    Logger log = LoggerUtil.getLogger(getClass());
+
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        System.out.println("123");
+        log.info("123");
         return null;
     }
 

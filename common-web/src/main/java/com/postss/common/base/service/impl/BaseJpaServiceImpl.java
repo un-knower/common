@@ -2,11 +2,15 @@ package com.postss.common.base.service.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,12 +19,16 @@ import com.postss.common.base.enums.QueryType;
 import com.postss.common.base.page.BasePage;
 import com.postss.common.base.page.QueryPage;
 import com.postss.common.base.repository.BaseRepository;
-import com.postss.common.base.repository.BaseRepositoryEntity;
 import com.postss.common.base.service.BaseJpaService;
 import com.postss.common.log.entity.Logger;
 import com.postss.common.log.util.LoggerUtil;
+import com.postss.common.system.exception.BeanNotFindException;
+import com.postss.common.system.exception.SystemException;
+import com.postss.common.util.ConvertUtil;
 import com.postss.common.util.JpaUtil;
 import com.postss.common.util.ReflectUtil;
+import com.postss.common.util.SpringBeanUtil;
+import com.postss.common.util.XmlWebApplicationContextUtil;
 
 /**
  * 使用JPA Service公共基础类
@@ -30,16 +38,23 @@ import com.postss.common.util.ReflectUtil;
  * @version 1.0.0
  * @param <T>
  */
-@SuppressWarnings("unchecked")
-public abstract class BaseJpaServiceImpl<T> implements BaseJpaService<T> {
+public abstract class BaseJpaServiceImpl<T> implements BaseJpaService<T>, ApplicationListener<ContextRefreshedEvent> {
 
     protected Logger log = LoggerUtil.getLogger(getClass());
 
-    public abstract BaseRepositoryEntity getDao();
+    protected BaseRepository<T, Serializable> repository;
 
-    @SuppressWarnings("rawtypes")
-    public BaseRepository getDaoReal() {
-        return (BaseRepository) getDao();
+    public BaseJpaServiceImpl(BaseRepository<T, Serializable> repository) {
+        super();
+        this.repository = repository;
+    }
+
+    public BaseJpaServiceImpl() {
+        super();
+    }
+
+    protected BaseRepository<T, Serializable> getRepository() {
+        return this.repository;
     }
 
     /**
@@ -56,14 +71,14 @@ public abstract class BaseJpaServiceImpl<T> implements BaseJpaService<T> {
         if (key == null) {
             throw new RuntimeException("NO FIELD!");
         }
-        T t = (T) getDaoReal().findOne(id);
+        T t = getRepository().findOne(id);
         if (t == null) {
             log.debug("method:updateById entity is undefined");
             return;
         }
         try {
             ReflectUtil.getWriteMethod(t.getClass(), key.getName()).invoke(t, value);
-            getDaoReal().save(t);
+            getRepository().save(t);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -76,7 +91,7 @@ public abstract class BaseJpaServiceImpl<T> implements BaseJpaService<T> {
      * @date 2016年7月17日下午12:06:13
      */
     public T findById(Serializable id) {
-        return (T) getDaoReal().findOne(id);
+        return getRepository().findOne(id);
     }
 
     @Override
@@ -86,22 +101,23 @@ public abstract class BaseJpaServiceImpl<T> implements BaseJpaService<T> {
             basePage.setBasePage(new BasePage());
         }
         if (basePage.getBasePage().isAllResult()) {
-            long count = getDaoReal().count(specification);
+            long count = getRepository().count(specification);
             if (count == 0L)
                 return new PageImpl<T>(new ArrayList<T>(), basePage.getPageResolver(), count);
             basePage.getBasePage().setAllResultPage(Integer.parseInt(String.valueOf(count)));
         }
-        return getDaoReal().findAll(specification, basePage.getPageResolver());
+        return getRepository().findAll(specification, basePage.getPageResolver());
     }
 
     @Override
-    public List<T> findByField(Class<T> clazz, String key, Object value) {
-        Object obj;
+    public List<T> findByField(String key, Object value) {
+        T obj;
         try {
+            Class<T> clazz = getThisClass();
             obj = clazz.newInstance();
             ReflectUtil.getWriteMethod(clazz, key).invoke(obj, value);
-            Specification<T> specification = (Specification<T>) JpaUtil.getSpecification(obj);
-            List<T> list = getDaoReal().findAll(specification);
+            Specification<T> specification = JpaUtil.getSpecification(obj);
+            List<T> list = getRepository().findAll(specification);
             return list;
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,18 +126,18 @@ public abstract class BaseJpaServiceImpl<T> implements BaseJpaService<T> {
     }
 
     @Override
-    public List<T> findByField(Class<T> clazz, String key, Object value, QueryType queryType) {
-        Object obj;
+    public List<T> findByField(String key, Object value, QueryType queryType) {
         try {
-            obj = clazz.newInstance();
+            Class<T> clazz = getThisClass();
+            T obj = clazz.newInstance();
             ReflectUtil.getWriteMethod(clazz, key).invoke(obj, value);
             Specification<T> specification = null;
             if (queryType == QueryType.LIKE) {
-                specification = (Specification<T>) JpaUtil.getSpecification(obj, new String[] { key });
+                specification = JpaUtil.getSpecification(obj, new String[] { key });
             } else {
-                specification = (Specification<T>) JpaUtil.getSpecification(obj);
+                specification = JpaUtil.getSpecification(obj);
             }
-            List<T> list = getDaoReal().findAll(specification);
+            List<T> list = getRepository().findAll(specification);
             return list;
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,18 +148,33 @@ public abstract class BaseJpaServiceImpl<T> implements BaseJpaService<T> {
     @Override
     public void delete(Serializable... ids) {
         for (Serializable id : ids) {
-            getDaoReal().delete(id);
+            getRepository().delete(id);
         }
     }
 
     @Override
     public T save(T t) {
-        return (T) getDaoReal().save(t);
+        return getRepository().save(t);
     }
 
     @Override
-    public T update(T t) {
-        return (T) getDaoReal().save(t);
+    public T update(Serializable id, T t) {
+        T find = getRepository().findOne(id);
+        if (find == null) {
+            return find;
+        }
+        Map<String, Object> fieldMap = ConvertUtil.beanConvertToMap(t);
+        fieldMap.forEach((fieldName, value) -> {
+            Method writeMethod = ReflectUtil.getWriteMethod(t.getClass(), fieldName);
+            if (writeMethod != null) {
+                try {
+                    writeMethod.invoke(find, value);
+                } catch (Exception e) {
+                    log.warn("write field : " + fieldName + " error,cause by : " + e);
+                }
+            }
+        });
+        return getRepository().save(find);
     }
 
     // ***************************自定义方法********************************//
@@ -167,5 +198,41 @@ public abstract class BaseJpaServiceImpl<T> implements BaseJpaService<T> {
         Map<String, Object> map = getMap();
         map.put(key, value);
         return map;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Class<T> getThisClass() {
+        return (Class<T>) ReflectUtil.getGenericInterfaces(getClass(), 0);
+    }
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        ApplicationContext context = event.getApplicationContext().getParent();
+        if (context != null) {
+            if (XmlWebApplicationContextUtil.getApplicationContext() == null) {
+                throw new RuntimeException("XmlWebApplicationContextUtil ApplicationContext 不存在，请检查SpringBeanUtil是否配置");
+            }
+            if (this.getClass().getSimpleName().indexOf("ServiceImpl") == -1) {
+                throw new SystemException("服务层类名必须以ServiceImpl结尾");
+            }
+            String className = this.getClass().getSimpleName().substring(0,
+                    this.getClass().getSimpleName().indexOf("ServiceImpl"));
+            className = Character.toLowerCase(className.charAt(0)) + className.substring(1, className.length());
+            String defaultBeanName = className + "Repository";
+            Object repository = SpringBeanUtil.getBean(defaultBeanName);
+            if (repository == null) {
+                log.warn("cant find bean:" + defaultBeanName + ",please check");
+                return;
+                // throw new BeanNotFindException(defaultBeanName);
+            }
+            if (repository instanceof BaseRepository) {
+                @SuppressWarnings("unchecked")
+                BaseRepository<T, Serializable> findRepository = (BaseRepository<T, Serializable>) repository;
+                log.info("auto config class: " + findRepository + " to service:" + this.getClass().getName());
+                this.repository = findRepository;
+            } else {
+                throw new BeanNotFindException(defaultBeanName, BaseRepository.class);
+            }
+        }
     }
 }

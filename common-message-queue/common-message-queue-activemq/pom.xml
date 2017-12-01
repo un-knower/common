@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.postss</groupId>
 		<artifactId>common-message-queue</artifactId>
-		<version>2.0-SNAPSHOT</version>
+		<version>2.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>common-message-queue-activemq</artifactId>
 	<name>common-message-queue-activemq</name>

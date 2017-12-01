@@ -6,7 +6,7 @@
 	<artifactId>common</artifactId>
 	<packaging>pom</packaging>
 	<name>common</name>
-	<version>2.0-SNAPSHOT</version>
+	<version>2.1-SNAPSHOT</version>
 	<description />
 
 	<modules>
@@ -28,7 +28,7 @@
 
 		<!-- postss -->
 		<project-group-id>com.postss</project-group-id>
-		<project-group-version>2.0-SNAPSHOT</project-group-version>
+		<project-group-version>2.1-SNAPSHOT</project-group-version>
 		<!-- /postss -->
 
 		<!-- config -->
@@ -451,7 +451,27 @@
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${org.apache.maven.plugins.version}</version>
 				</plugin>
-
+				
+				<plugin>
+			        <artifactId>maven-resources-plugin</artifactId>
+			        <version>2.6</version>
+			        <executions>
+			          <execution>
+			            <id>default-testResources</id>
+			            <phase>process-test-resources</phase>
+			            <goals>
+			              <goal>testResources</goal>
+			            </goals>
+			          </execution>
+			          <execution>
+			            <id>default-resources</id>
+			            <phase>process-resources</phase>
+			            <goals>
+			              <goal>resources</goal>
+			            </goals>
+			          </execution>
+			        </executions>
+			      </plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -459,14 +479,14 @@
 
 	<distributionManagement>
 		<snapshotRepository>
-			<id>nexus</id>
+			<id>nexus2</id>
 			<name>common-manager</name>
 			<url>http://192.168.16.181:8081/repository/postss/</url>
 			<uniqueVersion>true</uniqueVersion>
 		</snapshotRepository>
 
 		<repository>
-			<id>nexus</id>
+			<id>nexus2</id>
 			<name>User Porject Release</name>
 			<url>http://192.168.16.181:8081/repository/postss/</url>
 		</repository>

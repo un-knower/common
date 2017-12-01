@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.postss.common.util.HtmlUtil;
 import com.postss.common.util.StringUtil;
 
 /**
@@ -33,6 +34,7 @@ public class AccessControlFilter implements Filter {
     /**允许访问方法值**/
     private final String ACCESS_CONTROL_ALLOW_METHOD_VALUE = "POST,GET,PUT,DELETE";
     private final String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
+    private final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
     private final String ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE = "true";
     //请求域名
     private final String ORIGIN = "Origin";
@@ -57,7 +59,18 @@ public class AccessControlFilter implements Filter {
         } else {
             httpServletResponse.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
         }
-        chain.doFilter(request, response);
+        String header = httpServletResponse.getHeader(ACCESS_CONTROL_ALLOW_HEADERS);
+        if (StringUtil.notEmpty(header)) {
+            httpServletResponse.setHeader(ACCESS_CONTROL_ALLOW_HEADERS, header);
+        } else {
+            httpServletResponse.setHeader(ACCESS_CONTROL_ALLOW_HEADERS, "x-requested-with");
+        }
+        if (httpServletRequest.getMethod().equals("OPTIONS")) {
+            HtmlUtil.writerJson(httpServletResponse, "ok");
+            return;
+        } else {
+            chain.doFilter(request, response);
+        }
     }
 
     public void init(FilterConfig fConfig) throws ServletException {

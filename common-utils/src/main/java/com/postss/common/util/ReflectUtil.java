@@ -29,27 +29,14 @@ public class ReflectUtil {
     private static Logger log = LoggerUtil.getLogger(ReflectUtil.class);
 
     /**
-     * 获得泛型类型(暂时只能获得编码中已确定的泛型，运行中泛型无法获得，只能获得)
-     * @author jwSun
-     * @date 2017年3月29日 上午9:37:20
-     * @param obj 存在泛型的类
-     * @param index 第几个泛型
-     * @return Class<?>
-     */
-    public static Class<?> getGenericInterfaces(Object obj, int index) {
-        return getGenericInterfaces(obj, index, 0);
-    }
-
-    /**
-     * 获得泛型类型(暂时只能获得编码中已确定的泛型，运行中泛型无法获得，只能获得)
+     * 获得泛型类型
      * @param obj  存在泛型的类
      * @param index 第几个泛型
-     * @param index2 第几个泛型中的第几个
      * @return 泛型类
      */
-    public static Class<?> getGenericInterfaces(Object obj, int index, int index2) {
-        Type[] type = obj.getClass().getGenericInterfaces();
-        return (Class<?>) ((ParameterizedType) type[index]).getActualTypeArguments()[index2];
+    public static Class<?> getGenericInterfaces(Class<?> clazz, int index) {
+        Type[] type = ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments();
+        return (Class<?>) type[index];
     }
 
     /**

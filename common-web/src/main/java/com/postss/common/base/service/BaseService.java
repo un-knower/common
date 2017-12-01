@@ -22,13 +22,12 @@ public interface BaseService<T> {
     public T save(T t);
 
     /**
-     * 更新
-     * @author jwSun
-     * @date 2017年4月7日 上午11:04:57
-     * @param t
+     * 更新有值的字段
+     * @param id 更新id
+     * @param t 更新值
      * @return
      */
-    public T update(T t);
+    public T update(Serializable id, T t);
 
     /**
      * 删除

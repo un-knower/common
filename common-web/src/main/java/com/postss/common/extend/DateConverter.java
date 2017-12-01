@@ -15,8 +15,14 @@ public class DateConverter implements Converter<String, Date> {
 
     @Override
     public Date convert(String source) {
+        if (!StringUtil.notEmpty(source)) {
+            return null;
+        }
         if (StringUtil.getAllPatternMattcher(source, DateUtil.DATE.PATTERN_YYYY_MM_DD_HH_MM_SS, 0) != null) {
             return DateUtil.parse(source, DateUtil.DATE.YYYY_MM_DD_HH_MM_SS);
+        }
+        if (StringUtil.getAllPatternMattcher(source, DateUtil.DATE.PATTERN_YYYY_MM_DD_HH_MM, 0) != null) {
+            return DateUtil.parse(source, DateUtil.DATE.YYYY_MM_DD_HH_MM);
         }
         if (StringUtil.getAllPatternMattcher(source, DateUtil.DATE.PATTERN_YYYY_MM_DD, 0) != null) {
             return DateUtil.parse(source, DateUtil.DATE.YYYY_MM_DD);

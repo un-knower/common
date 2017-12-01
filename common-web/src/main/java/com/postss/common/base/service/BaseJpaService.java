@@ -54,7 +54,7 @@ public interface BaseJpaService<T> extends BaseService<T> {
      * @param value 查询值
      * @return
      */
-    public List<T> findByField(Class<T> clazz, String key, Object value);
+    public List<T> findByField(String key, Object value);
 
     /**
      * 根据key-value查询
@@ -64,7 +64,7 @@ public interface BaseJpaService<T> extends BaseService<T> {
      * @param queryType 查询类型(like equal)
      * @return
      */
-    public List<T> findByField(Class<T> clazz, String key, Object value, QueryType queryType);
+    public List<T> findByField(String key, Object value, QueryType queryType);
 
     //**************************自定义功能*************************************//
 

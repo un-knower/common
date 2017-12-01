@@ -5,6 +5,7 @@ import java.util.Date;
 import com.postss.common.system.code.SystemCode;
 import com.postss.common.system.exception.SystemCodeException;
 import com.postss.common.util.ComparatorUtil;
+import com.postss.common.util.DateUtil;
 
 /**
  * 分页基础类
@@ -16,8 +17,9 @@ public class BasePage {
     protected Integer total;// 条数
 
     //时间段查询
-    protected Date startTime;// 开始时间
-    protected Date endTime;// 结束时间
+    protected Date startTime;// 开始时间 00:00:00
+    protected Date endTime;// 结束时间 00:00:00
+    protected Date endTimeWithThis;// 结束时间(包含当天) 另一天00:00:00
 
     //bootstarp表格
     protected String order;//asc或desc
@@ -57,15 +59,6 @@ public class BasePage {
 
     public BasePage setStartTime(Date startTime) {
         this.startTime = startTime;
-        return this;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public BasePage setEndTime(Date endTime) {
-        this.endTime = endTime;
         return this;
     }
 
@@ -208,6 +201,30 @@ public class BasePage {
             //逻辑稍后
         }
 
+    }
+
+    public Date getEndTimeWithThis() {
+        if (endTimeWithThis == null && endTime != null) {
+            return DateUtil.localDateTimeToDate(DateUtil.dateToLocalDateTime(endTime).plusDays(1));
+        }
+        return endTimeWithThis;
+    }
+
+    public BasePage setEndTimeWithThis(Date endTimeWithThis) {
+        this.endTimeWithThis = endTimeWithThis;
+        return this;
+    }
+
+    public Date getEndTime() {
+        if (endTime == null && endTimeWithThis != null) {
+            return DateUtil.localDateTimeToDate(DateUtil.dateToLocalDateTime(endTimeWithThis).plusDays(-1));
+        }
+        return endTime;
+    }
+
+    public BasePage setEndTime(Date endTime) {
+        this.endTime = endTime;
+        return this;
     }
 
 }

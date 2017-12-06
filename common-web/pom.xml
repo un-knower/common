@@ -61,12 +61,10 @@
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.servlet</artifactId>
-			<!-- <scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.servlet.jsp</artifactId>
-			<!-- <scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -94,6 +92,12 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
